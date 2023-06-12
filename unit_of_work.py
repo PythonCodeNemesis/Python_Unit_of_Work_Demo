@@ -1,10 +1,26 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base
 from contextlib import contextmanager
 
 # Set up the database connection and session factory
 engine = sqlalchemy.create_engine('sqlite:///example.db')
 Session = sessionmaker(bind=engine)
+Base = declarative_base()
+
+# Define the User class
+class User(Base):
+    __tablename__ = 'users'
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    email = sqlalchemy.Column(sqlalchemy.String)
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+# Create the table
+Base.metadata.create_all(engine)
 
 # Define the unit of work class
 class UnitOfWork:
